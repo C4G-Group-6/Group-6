@@ -1,31 +1,21 @@
 
 
-# Project Name
+# ResourceConnect
 
-> TODO: Add final project name.
 
 A web application developed as part of the **Computing 4 Good 2026** program at the **Colorado School of Mines**.
 
 ## Overview
+ResourceConnect is a website with the goal of helping people experiencing homelessness find help, and helping people interested in helping with homlessness get involved. Our webiste cuurently has two main branches. The "get involved" branch is targeted towards users wanting to help with homelessness. Features include short/simple education regarding homelessness, a quiz to help get an idea of how the user wants to involve themself, and an AI chatbot to assist with learning about involvement. The 
+"find resources" branch is targeted towards users experiencing homelessness. Features include a map to help locate resources that can be helpful, search for nearby resources, and suggest other helpful resource centers/search hubs.
+This project is currently in the development phase. 
 
-> TODO: Implement project overview once the team finalizes the product direction.
-
-This project is currently in the early planning and development phase. The team is exploring how to support community engagement, resource discovery, and education around homelessness and housing insecurity.
-
-Potential focus areas may include:
-
-- Helping community members discover ways to get involved
-- Helping users find local support resources
-- Providing educational content around homelessness and housing instability
-- Creating a simple, accessible, and mobile-friendly web experience
-
-> TODO: Replace this section with a more specific product description once the MVP scope is finalized.
 
 ---
 
 ## Table of Contents
 
-- [Project Name](#project-name)
+- [ResourceConnect](#project-name)
   - [Overview](#overview)
   - [Tech Stack](#tech-stack)
   - [Why This Stack](#why-this-stack)
