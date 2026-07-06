@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In - ResourceConnect{% endblock %}
+
+{% block content %}
+{% include 'partials/navbar.html' %}
+
+<main class="auth-page">
+  <div class="auth-header">
+    <h1 class="auth-title">Log In</h1>
+  </div>
+
+  <form method="post" class="auth-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <p class="form-error">{{ form.non_field_errors.0 }}</p>
+    {% endif %}
+    {{ form.username }}
+    {{ form.password }}
+    <button type="submit" class="cta-button self-center">Log In</button>
+  </form>
+</main>
+{% endblock %}

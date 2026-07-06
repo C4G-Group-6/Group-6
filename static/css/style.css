@@ -1,0 +1,113 @@
+:root {
+  --color-nav-bg: #1f452d;
+  --color-button-bg: #add6c5;
+  --color-text-dark: #000;
+  --color-text-light: #fff;
+  --font-heading: "Inter", -apple-system, Roboto, Helvetica, sans-serif;
+  --font-subtitle: "Oswald", -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  font-family: var(--font-heading);
+}
+
+/* Navbar */
+.navbar {
+  background: var(--color-nav-bg);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  max-width: 1954px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem clamp(1rem, 3vw, 3rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link,
+.nav-login {
+  color: var(--color-text-light);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.8vw, 2rem);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-login {
+  margin-left: auto;
+}
+
+/* Hero */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(3rem, 12vw, 10rem) 1.5rem clamp(3rem, 10vw, 8rem);
+}
+
+.hero-title {
+  margin: 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 8vw, 4.6875rem);
+  line-height: normal;
+}
+
+.hero-subtitle {
+  max-width: 75rem;
+  margin: clamp(1.5rem, 4vw, 3.4375rem) 0 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-subtitle);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: normal;
+}
+
+.cta-button {
+  margin: clamp(2rem, 6vw, 4.5rem) 0 0;
+  border: none;
+  border-radius: 0.8125rem;
+  background: var(--color-button-bg);
+  color: var(--color-text-dark);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 4vw, 3.125rem);
+  padding: clamp(1rem, 3vw, 2.4rem) clamp(2rem, 6vw, 5.6875rem);
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  filter: brightness(0.97);
+}
+
+@media (max-width: 640px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-login {
+    margin-left: 0;
+  }
+}

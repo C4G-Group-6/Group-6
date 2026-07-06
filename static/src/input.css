@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .navbar {
+    @apply bg-nav-bg;
+  }
+
+  .nav-container {
+    @apply flex flex-wrap items-center gap-4 md:gap-8 max-w-7xl mx-auto px-4 md:px-8 py-6;
+  }
+
+  .nav-links {
+    @apply flex flex-wrap items-center gap-4 md:gap-12 list-none m-0 p-0;
+  }
+
+  .nav-link,
+  .nav-login {
+    @apply text-white font-heading font-semibold text-base md:text-xl lg:text-2xl whitespace-nowrap no-underline;
+  }
+
+  .nav-login {
+    @apply ml-auto;
+  }
+
+  .hero {
+    @apply flex flex-col items-center text-center px-6 py-12 md:py-24 lg:py-32;
+  }
+
+  .hero-title {
+    @apply m-0 text-black font-heading font-bold text-3xl md:text-5xl lg:text-7xl leading-normal;
+  }
+
+  .hero-subtitle {
+    @apply max-w-4xl m-6 md:m-8 lg:m-12 text-0 text-black font-subtitle font-normal text-base md:text-lg lg:text-2xl leading-normal;
+  }
+
+  .cta-button {
+    @apply mt-8 md:mt-12 lg:mt-16 border-none rounded-lg bg-button-bg text-black font-heading font-semibold text-lg md:text-2xl lg:text-3xl px-8 md:px-12 lg:px-16 py-4 md:py-6 lg:py-8 cursor-pointer transition-all hover:brightness-95;
+  }
+
+  .auth-page {
+    @apply flex flex-col items-center px-6 py-12 md:py-16;
+  }
+
+  .auth-header {
+    @apply relative grid grid-cols-1 sm:grid-cols-3 items-center gap-4 w-full max-w-5xl mx-auto mb-10 md:mb-14;
+  }
+
+  .auth-title {
+    @apply sm:col-start-2 m-0 text-center text-black font-heading font-bold text-3xl md:text-5xl lg:text-7xl leading-normal;
+  }
+
+  .auth-link {
+    @apply sm:col-start-3 justify-self-start sm:justify-self-end text-black font-heading font-semibold text-base md:text-lg lg:text-2xl no-underline whitespace-nowrap;
+  }
+
+  .auth-card {
+    @apply flex flex-col gap-6 md:gap-8 w-full max-w-2xl mx-auto p-8 md:p-12 lg:p-16 border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem];
+  }
+
+  .auth-form {
+    @apply flex flex-col gap-6 md:gap-8 w-full max-w-xl mx-auto;
+  }
+
+  .form-input {
+    @apply block w-full border-none outline-none bg-[#D9D9D9] font-subtitle text-nav-bg placeholder-nav-bg/25 px-6 py-5 md:py-6 lg:py-7 text-base md:text-lg lg:text-xl;
+  }
+
+  .form-error {
+    @apply text-red-600 font-subtitle text-sm md:text-base;
+  }
+
+  @media (max-width: 640px) {
+    .nav-container {
+      @apply flex-col items-start;
+    }
+
+    .nav-login {
+      @apply ml-0;
+    }
+  }
+}
