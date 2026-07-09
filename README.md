@@ -1,4 +1,12 @@
+To run website, open repo in vs code and run this in the terminal:
 
+cd C:\Users\popej\Group-6
+
+.venv\Scripts\Activate.ps1
+
+python manage.py runserver
+
+Then, click the link it gives you to open the website dev server
 
 # ResourceConnect
 
