@@ -1,12 +1,19 @@
+To run website, open repo in vs code and run this in the terminal:
 
+cd C:\Users\popej\Group-6
+
+.venv\Scripts\Activate.ps1
+
+python manage.py runserver
+
+Then, click the link it gives you to open the website dev server
 
 # ResourceConnect
-Current webiste html file link: file:///c%3A/Users/pkotz/Group-6/index.html
 
 A web application developed as part of the **Computing 4 Good 2026** program at the **Colorado School of Mines**.
 
 ## Overview
-ResourceConnect is a website with the goal of helping people experiencing homelessness find help, and helping people interested in helping with homlessness get involved. Our webiste cuurently has two main branches. The "get involved" branch is targeted towards users wanting to help with homelessness. Features include short/simple education regarding homelessness, a quiz to help get an idea of how the user wants to involve themself, and an AI chatbot to assist with learning about involvement. The 
+ResourceConnect is a website with the goal of helping people experiencing homelessness find help, and helping people interested in helping with homelessness get involved. Our website currently has two main branches. The "get involved" branch is targeted towards users wanting to help with homelessness. Features include short/simple education regarding homelessness, a quiz to help get an idea of how the user wants to involve themself, and an AI chatbot to assist with learning about involvement. The 
 "find resources" branch is targeted towards users experiencing homelessness. Features include a map to help locate resources that can be helpful, search for nearby resources, and suggest other helpful resource centers/search hubs.
 This project is currently in the development phase. 
 
@@ -1020,3 +1027,4 @@ This project is part of the **Computing 4 Good 2026** program at the **Colorado 
 MIT License for open-source projects
 
 ---
+.
