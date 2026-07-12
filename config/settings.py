@@ -107,3 +107,6 @@ CORS_ALLOWED_ORIGINS = env(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:3000,http://localhost:8000'
 ).split(',')
+
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
+SESSION_SAVE_EVERY_REQUEST = True
