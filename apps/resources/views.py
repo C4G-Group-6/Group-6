@@ -373,6 +373,10 @@ def find_resources(request):
         except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
             search_error = 'Unable to reach the 2-1-1 Colorado database right now.'
 
+    favorited_names = []
+    if request.user.is_authenticated:
+        favorited_names = list(request.user.favorites.values_list('name', flat=True))
+
     return render(
         request,
         'resources/find_resources.html',
@@ -382,7 +386,8 @@ def find_resources(request):
             'results': results,
             'total_results': total_results,
             'search_error': search_error,
-        },
+            'favorited_names': favorited_names,
+        }
     )
 
 def find_resources_map(request):
