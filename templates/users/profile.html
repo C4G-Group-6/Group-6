@@ -4,7 +4,16 @@
 
 {% block content %}
 <main class="profile-page">
-  <h1 class="profile-title">Welcome, {{ request.user.username }}.</h1>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1 class="profile-title" style="margin: 0;">Welcome, {{ request.user.username }}.</h1>
+    
+    <form method="post" action="{% url 'users:logout' %}" style="margin: 0;">
+      {% csrf_token %}
+      <button type="submit" style="background-color: #ef4444; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer;">
+        Log Out
+      </button>
+    </form>
+  </div>
 
   <div class="profile-grid">
     <section class="profile-card">
@@ -62,9 +71,20 @@
               <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #4b5563;">📞 {{ fav.phone }}</p>
             {% endif %}
             
-            {% if fav.website %}
-              <a href="{{ fav.website }}" target="_blank" rel="noopener" style="color: #2563eb; font-size: 0.9rem; font-weight: 500; text-decoration: underline;">Visit website</a>
-            {% endif %}
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem;">
+              {% if fav.website %}
+                <a href="{{ fav.website }}" target="_blank" rel="noopener" style="color: #2563eb; font-size: 0.9rem; font-weight: 500; text-decoration: underline;">Visit website</a>
+              {% else %}
+                <div></div> {% endif %}
+
+              <form method="post" action="{% url 'users:remove_from_favorites' %}" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="name" value="{{ fav.name }}">
+                <button type="submit" style="background-color: #4b5563; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer;">
+                  💔 Remove
+                </button>
+              </form>
+            </div>
           </div>
         {% empty %}
           <p class="empty-state" style="color: #9ca3af; font-style: italic;">No favorites saved yet. Search resources to add them here!</p>
