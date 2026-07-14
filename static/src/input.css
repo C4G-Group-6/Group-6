@@ -250,9 +250,8 @@
 
   .resource-category {
     @apply border-4 md:border-[6px] lg:border-[7.5px] border-nav-bg rounded-2xl lg:rounded-[1.5625rem] bg-white text-black font-heading font-bold text-sm sm:text-base md:text-xl lg:text-2xl px-4 py-4 md:py-6 cursor-pointer transition-all hover:brightness-95 flex items-center justify-center text-center leading-tight whitespace-normal min-w-0;
-    overflow-wrap: normal;
-    word-break: normal;
-    hyphens: manual;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .resource-category--food {
