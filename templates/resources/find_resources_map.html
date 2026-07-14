@@ -23,11 +23,11 @@
     <p class="sidebar-page-subtitle">Select a category to load nearby resources on the map.</p>
 
     <div class="resource-categories">
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'food' }" @click="selectCategory('food')">Food</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'shelter' }" @click="selectCategory('shelter')">Shelter</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'clothing' }" @click="selectCategory('clothing')">Clothing</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'transportation' }" @click="selectCategory('transportation')">Transportation</button>
-      <button type="button" class="resource-category" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="selectCategory('healthcare')">Healthcare</button>
+      <button type="button" class="resource-category resource-category--food" :class="{ 'resource-category--selected': category === 'food' }" @click="selectCategory('food')">Food</button>
+      <button type="button" class="resource-category resource-category--shelter" :class="{ 'resource-category--selected': category === 'shelter' }" @click="selectCategory('shelter')">Shelter</button>
+      <button type="button" class="resource-category resource-category--clothing" :class="{ 'resource-category--selected': category === 'clothing' }" @click="selectCategory('clothing')">Clothing</button>
+      <button type="button" class="resource-category resource-category--transportation" :class="{ 'resource-category--selected': category === 'transportation' }" @click="selectCategory('transportation')">Transportation</button>
+      <button type="button" class="resource-category resource-category--healthcare" :class="{ 'resource-category--selected': category === 'healthcare' }" @click="selectCategory('healthcare')">Healthcare</button>
     </div>
 
     <div class="resource-map" style="overflow: hidden;">
@@ -70,6 +70,13 @@
       markers: [],
       defaultCenter: config.defaultCenter,
       apiEndpoint: config.apiEndpoint,
+      categoryColors: {
+        food: '#FACC15',
+        shelter: '#60A5FA',
+        clothing: '#C084FC',
+        transportation: '#FB923C',
+        healthcare: '#F87171',
+      },
 
       setup() {
         if (!window.L) {
@@ -129,6 +136,17 @@
         return `<div style="max-width:260px;line-height:1.4">${lines.join('<br>')}</div>`;
       },
 
+      buildMarkerIcon() {
+        const color = this.categoryColors[this.category] || '#D9D9D9';
+        return L.divIcon({
+          className: 'resource-marker-icon',
+          html: `<span class="resource-pin" style="background-color:${color}"></span>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+          popupAnchor: [0, -12],
+        });
+      },
+
       clearMarkers() {
         this.markers.forEach((marker) => marker.remove());
         this.markers = [];
@@ -148,10 +166,12 @@
         }
 
         const bounds = [];
+        const icon = this.buildMarkerIcon();
 
         items.forEach((item) => {
           const marker = L.marker([item.lat, item.lng], {
             title: item.name,
+            icon,
           }).addTo(this.map);
           marker.bindPopup(this.buildInfoHtml(item));
           marker.on('click', () => {
