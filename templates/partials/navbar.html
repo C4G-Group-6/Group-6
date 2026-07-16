@@ -15,7 +15,8 @@
         <img src="https://api.builder.io/api/v1/image/assets/TEMP/1f093f730945bce58189af8921d0360087bf11e0?width=366" alt="Profile" class="nav-avatar-img" />
       </a>
     {% else %}
-      <a href="{% url 'users:signup' %}" class="nav-login">Sign Up / Login</a>
+      <a href="{% url 'users:signup' %}" class="nav-login">Sign Up</a>
+      <a href="{% url 'users:login' %}" class="nav-login">Log In</a>
     {% endif %}
   </nav>
   {% endwith %}

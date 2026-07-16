@@ -50,6 +50,17 @@
 
 {% block content %}
 <main class="content-page chatbot-page">
+  <div style="margin-bottom: 1rem;">
+    <a
+      href="{% url 'core:get_involved' %}"
+      style="display: inline-flex; align-items: center; gap: 0.4rem; color: #1f7a8c; font-weight: 600; text-decoration: none;"
+      aria-label="Back to Get Involved"
+    >
+      <span aria-hidden="true">&larr;</span>
+      <span>Back to Get Involved</span>
+    </a>
+  </div>
+
   <div class="chatbot-window" id="chatbotWindow" aria-live="polite"></div>
   <form id="chatbotForm" class="chatbot-form" autocomplete="off">
     {% csrf_token %}

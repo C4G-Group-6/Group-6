@@ -15,7 +15,8 @@
     class="sidebar-page-content"
     x-data="resourceMapPage({
       apiEndpoint: '{% url "resources:map_markers_api" %}',
-      defaultCenter: { lat: {{ colorado_center.lat }}, lng: {{ colorado_center.lng }} }
+      defaultCenter: { lat: {{ colorado_center.lat }}, lng: {{ colorado_center.lng }} },
+       initialFavoritedNames: JSON.parse('{{ favorited_names_json|escapejs }}')
     })"
     x-init="setup()"
   >
@@ -50,6 +51,35 @@
           <p class="text-sm text-gray-700" x-text="selectedResource && selectedResource.distance_miles !== null ? `${selectedResource.distance_miles} miles away` : ''"></p>
           <p class="text-sm text-gray-700" x-show="selectedResource && selectedResource.phone" x-text="selectedResource ? selectedResource.phone : ''"></p>
           <a class="why-it-matters-link" x-show="selectedResource && selectedResource.website" :href="selectedResource ? selectedResource.website : '#'" target="_blank" rel="noopener noreferrer">Open details</a>
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'users:add_to_favorites' %}" @submit.prevent="addSelectedToFavorites($event)" x-show="!isSelectedFavorited()" x-cloak style="display: block; margin: 0.75rem 0 0;">
+              {% csrf_token %}
+              <input type="hidden" name="name" :value="selectedResource ? selectedResource.name : ''">
+              <input type="hidden" name="agency_name" :value="selectedResource ? (selectedResource.agency_name || '') : ''">
+              <input type="hidden" name="description" :value="selectedResource ? (selectedResource.description || '') : ''">
+              <input type="hidden" name="address" :value="selectedResource ? (selectedResource.address || '') : ''">
+              <input type="hidden" name="phone" :value="selectedResource ? (selectedResource.phone || '') : ''">
+              <input type="hidden" name="website" :value="selectedResource ? (selectedResource.website || '') : ''">
+
+              <button type="submit" :disabled="savingFavorite" :style="savingFavorite ? 'background-color: #4b5563; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: default; display: inline-flex; align-items: center; gap: 4px; opacity: 0.9;' : 'background-color: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;'">
+                <span x-text="savingFavorite ? 'Saving...' : '❤️ Add to Favorites'"></span>
+              </button>
+            </form>
+
+            <form method="post" action="{% url 'users:remove_from_favorites' %}" @submit.prevent="removeSelectedFromFavorites($event)" x-show="isSelectedFavorited()" x-cloak style="display: block; margin: 0.75rem 0 0;">
+              {% csrf_token %}
+              <input type="hidden" name="name" :value="selectedResource ? selectedResource.name : ''">
+
+              <button type="submit" :disabled="savingFavorite" :style="savingFavorite ? 'background-color: #6b7280; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: default; display: inline-flex; align-items: center; gap: 4px; opacity: 0.9;' : 'background-color: #4b5563; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;'">
+                <span x-text="savingFavorite ? 'Removing...' : '💔 Remove Favorite'"></span>
+              </button>
+            </form>
+          {% else %}
+            <p style="margin-top: 0.75rem; font-size: 0.9rem; color: #4b5563;">
+              <a href="{% url 'users:login' %}" style="color: #2563eb; text-decoration: underline;">Log in</a>
+              to save this resource to favorites.
+            </p>
+          {% endif %}
         </div>
       </div>
     </section>
@@ -66,16 +96,98 @@
       statusMessage: 'Choose a category to load map markers.',
       resources: [],
       selectedResource: null,
+      savingFavorite: false,
       map: null,
       markers: [],
       defaultCenter: config.defaultCenter,
       apiEndpoint: config.apiEndpoint,
+      favoritedNames: new Set((config.initialFavoritedNames || []).map((name) => (name || '').trim().toLowerCase()).filter(Boolean)),
       categoryColors: {
         food: '#FACC15',
         shelter: '#60A5FA',
         clothing: '#C084FC',
         transportation: '#FB923C',
         healthcare: '#F87171',
+      },
+
+      normalizeFavoriteName(name) {
+        return (name || '').trim().toLowerCase();
+      },
+
+      isSelectedFavorited() {
+        if (!this.selectedResource) {
+          return false;
+        }
+        const selectedName = this.normalizeFavoriteName(this.selectedResource.name);
+        return !!selectedName && this.favoritedNames.has(selectedName);
+      },
+
+      async addSelectedToFavorites(event) {
+        if (!this.selectedResource || this.isSelectedFavorited() || this.savingFavorite) {
+          return;
+        }
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        this.savingFavorite = true;
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams(formData),
+          });
+
+          if (!response.ok) {
+            throw new Error('Could not save favorite right now.');
+          }
+
+          const selectedName = this.normalizeFavoriteName(this.selectedResource.name);
+          if (selectedName) {
+            this.favoritedNames.add(selectedName);
+          }
+          this.statusMessage = 'Resource saved to favorites.';
+        } catch (error) {
+          this.statusMessage = error && error.message ? error.message : 'Could not save favorite right now.';
+        } finally {
+          this.savingFavorite = false;
+        }
+      },
+
+      async removeSelectedFromFavorites(event) {
+        if (!this.selectedResource || !this.isSelectedFavorited() || this.savingFavorite) {
+          return;
+        }
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        this.savingFavorite = true;
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams(formData),
+          });
+
+          if (!response.ok) {
+            throw new Error('Could not remove favorite right now.');
+          }
+
+          const selectedName = this.normalizeFavoriteName(this.selectedResource.name);
+          if (selectedName) {
+            this.favoritedNames.delete(selectedName);
+          }
+          this.statusMessage = 'Resource removed from favorites.';
+        } catch (error) {
+          this.statusMessage = error && error.message ? error.message : 'Could not remove favorite right now.';
+        } finally {
+          this.savingFavorite = false;
+        }
       },
 
       setup() {

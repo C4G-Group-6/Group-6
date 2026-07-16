@@ -5,6 +5,17 @@
 
 {% block content %}
 <main class="content-page quiz-page" x-data="quizApp()">
+  <div style="margin-bottom: 1rem;">
+    <a
+      href="{% url 'core:get_involved' %}"
+      style="display: inline-flex; align-items: center; gap: 0.4rem; color: #1f7a8c; font-weight: 600; text-decoration: none;"
+      aria-label="Back to Get Involved"
+    >
+      <span aria-hidden="true">&larr;</span>
+      <span>Back to Get Involved</span>
+    </a>
+  </div>
+
   <div class="quiz-header">
     <h1 class="profile-title">Involvement Quiz</h1>
     <button
