@@ -402,12 +402,17 @@ def find_resources(request):
     )
 
 def find_resources_map(request):
+    favorited_names = []
+    if request.user.is_authenticated:
+        favorited_names = list(request.user.favorites.values_list('name', flat=True))
+
     return render(
         request,
         'resources/find_resources_map.html',
         {
             'active_tab': 'map',
             'colorado_center': COLORADO_CENTER,
+            'favorited_names_json': json.dumps(favorited_names),
         },
     )
 

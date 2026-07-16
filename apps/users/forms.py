@@ -5,20 +5,20 @@ from django.contrib.auth.models import User
 class SignUpForm(forms.Form):
     username = forms.CharField(
         max_length=150,
-        widget=forms.TextInput(attrs={'class': 'form-input text-right', 'placeholder': 'Username'}),
+        widget=forms.TextInput(attrs={'class': 'form-input text-left', 'placeholder': 'Username'}),
     )
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={'class': 'form-input text-right', 'placeholder': 'Email'}),
+        widget=forms.EmailInput(attrs={'class': 'form-input text-left', 'placeholder': 'Email'}),
     )
     zip_code = forms.CharField(
         max_length=10,
-        widget=forms.TextInput(attrs={'class': 'form-input text-right', 'placeholder': 'Zip Code'}),
+        widget=forms.TextInput(attrs={'class': 'form-input text-left', 'placeholder': 'Zip Code'}),
     )
     password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-input text-right', 'placeholder': 'Password'}),
+        widget=forms.PasswordInput(attrs={'class': 'form-input text-left', 'placeholder': 'Password'}),
     )
     password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-input text-right', 'placeholder': 'Re-Enter Password'}),
+        widget=forms.PasswordInput(attrs={'class': 'form-input text-left', 'placeholder': 'Re-Enter Password'}),
     )
 
     def clean_username(self):
@@ -68,13 +68,13 @@ class ProfileForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
-            'class': 'form-input text-center text-xl md:text-2xl lg:text-3xl py-6 md:py-8 lg:py-10',
-            'placeholder': 'Username / Email',
+            'class': 'form-input text-left text-xl md:text-2xl lg:text-3xl py-6 md:py-8 lg:py-10',
+            'placeholder': 'Username',
         }),
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
-            'class': 'form-input text-center text-xl md:text-2xl lg:text-3xl py-6 md:py-8 lg:py-10',
+            'class': 'form-input text-left text-xl md:text-2xl lg:text-3xl py-6 md:py-8 lg:py-10',
             'placeholder': 'Password',
         }),
     )
