@@ -10,6 +10,10 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = env('DEBUG', default=False)
 
+# Vercel deployments should never run with Django debug mode enabled.
+if os.getenv('VERCEL') == '1':
+    DEBUG = False
+
 raw_allowed_hosts = env('ALLOWED_HOSTS', default='localhost,127.0.0.1')
 ALLOWED_HOSTS = [host.strip() for host in raw_allowed_hosts.split(',') if host.strip()]
 
