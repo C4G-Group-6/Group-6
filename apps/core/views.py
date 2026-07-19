@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from apps.resources.views import _search_211_colorado
+from apps.resources.views import _search_211_volunteer_opportunities
 
 CURATED_VOLUNTEER_FACTS = """
 Awards:
@@ -252,7 +252,7 @@ def get_involved(request):
 
     if search_query:
         try:
-            results, total_results = _search_211_colorado(search_query)
+            results, total_results = _search_211_volunteer_opportunities(search_query)
         except (urllib.error.URLError, urllib.error.HTTPError, KeyError, IndexError, ValueError, json.JSONDecodeError):
             search_error = 'Unable to reach the 2-1-1 Colorado database right now.'
 
