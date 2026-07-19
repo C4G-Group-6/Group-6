@@ -36,6 +36,28 @@ HOMELESSNESS_KEYWORDS = (
     'rent',
 )
 
+VOLUNTEER_KEYWORDS = (
+    'volunteer',
+    'volunteering',
+    'volunteers',
+    'community service',
+    'service opportunities',
+    'mentor',
+    'mentoring',
+    'tutor',
+    'tutoring',
+    'donate',
+    'donation',
+    'donations',
+    'food bank',
+    'food pantry',
+    'nonprofit',
+    'non-profit',
+    'charity',
+    'outreach',
+    'fundraising',
+)
+
 CATEGORY_CONFIG = {
     'food': {
         'query': 'food',
@@ -161,7 +183,61 @@ def _rank_homelessness_relevance(result, query):
     return score
 
 
-def _search_211_colorado(query):
+def _rank_volunteer_relevance(result, query):
+    # Deliberately excludes agency_name: an agency merely being named e.g.
+    # "Volunteers of America" shouldn't make every one of its programs
+    # (housing, food, etc.) look like a volunteer opportunity.
+    haystack = ' '.join(
+        value.lower()
+        for value in (
+            result.get('name') or '',
+            result.get('description') or '',
+        )
+    )
+
+    score = 0
+
+    if query:
+        query_lower = query.lower()
+        if query_lower in haystack:
+            score += 20
+
+    for index, keyword in enumerate(VOLUNTEER_KEYWORDS):
+        if keyword in haystack:
+            score += max(0, 14 - index)
+
+    if result.get('name') and 'volunteer' in result['name'].lower():
+        score += 10
+
+    return score
+
+
+def _build_volunteer_terms(raw_query):
+    # The 2-1-1 search API ORs each entry in `terms` as a separate keyword
+    # (a multi-word string is matched as one exact phrase, which rarely
+    # hits), so keep "volunteer" as its own guaranteed-to-match term and
+    # add the user's raw query as a second, best-effort term alongside it.
+    terms = ['volunteer']
+
+    if raw_query and not _is_zip_code(raw_query) and 'volunteer' not in raw_query.lower():
+        terms.append(raw_query)
+
+    return terms
+
+
+def _is_volunteer_relevant(result):
+    # Deliberately excludes agency_name; see _rank_volunteer_relevance.
+    haystack = ' '.join(
+        value.lower()
+        for value in (
+            result.get('name') or '',
+            result.get('description') or '',
+        )
+    )
+    return any(keyword in haystack for keyword in VOLUNTEER_KEYWORDS)
+
+
+def _search_211_colorado(query, term=None, rank_fn=None):
     cookie_jar = http.cookiejar.CookieJar()
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie_jar))
 
@@ -172,7 +248,10 @@ def _search_211_colorado(query):
 
     location = query if _is_zip_code(query) else 'Colorado'
     coords = _lookup_zip_coordinates(query) if _is_zip_code(query) else COLORADO_CENTER
-    terms = [ZIP_FALLBACK_TERM] if _is_zip_code(query) else [query]
+    if term is not None:
+        terms = term if isinstance(term, list) else [term]
+    else:
+        terms = [ZIP_FALLBACK_TERM] if _is_zip_code(query) else [query]
 
     payload = {
         'page': 1,
@@ -209,14 +288,25 @@ def _search_211_colorado(query):
         _format_result(item)
         for item in result.get('results', [])
     ]
+    active_rank_fn = rank_fn or _rank_homelessness_relevance
     formatted_results.sort(
         key=lambda resource: (
-            -_rank_homelessness_relevance(resource, query),
+            -active_rank_fn(resource, query),
             resource.get('name') or '',
         )
     )
 
     return formatted_results, result.get('total_results', 0)
+
+
+def _search_211_volunteer_opportunities(query):
+    results, _raw_total = _search_211_colorado(
+        query,
+        term=_build_volunteer_terms(query),
+        rank_fn=_rank_volunteer_relevance,
+    )
+    volunteer_results = [result for result in results if _is_volunteer_relevant(result)]
+    return volunteer_results, len(volunteer_results)
 
 
 def _normalize_category(raw_category):
