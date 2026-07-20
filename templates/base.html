@@ -11,26 +11,12 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@400&display=swap"
     rel="stylesheet"
   />
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'nav-bg': '#1F452D',
-            'button-bg': '#ADD6C5',
-          },
-          fontFamily: {
-            'heading': ['Inter', '-apple-system', 'Roboto', 'Helvetica', 'sans-serif'],
-            'subtitle': ['Oswald', '-apple-system', 'Roboto', 'Helvetica', 'sans-serif'],
-          },
-        },
-      },
-    }
-  </script>
-
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  <style>
+    /* Readable fallback if static CSS is unavailable */
+    html, body { background: #ffffff; color: #111111; }
+  </style>
   {% block extra_css %}{% endblock %}
 </head>
 <body>

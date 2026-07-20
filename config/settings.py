@@ -7,9 +7,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, True))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+
+def _env_first(*names, default=''):
+    """Return the first non-empty env var among names, else default."""
+    for name in names:
+        value = env(name, default='')
+        if value not in (None, ''):
+            return value
+    return default
+
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
-DEBUG = env('DEBUG', default=True)
-ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost,127.0.0.1,.vercel.app').split(',')
+DEBUG = env('DEBUG', default=False)
+
+# Vercel deployments should never run with Django debug mode enabled.
+if os.getenv('VERCEL') == '1':
+    DEBUG = False
+
+raw_allowed_hosts = env('ALLOWED_HOSTS', default='localhost,127.0.0.1')
+ALLOWED_HOSTS = [host.strip() for host in raw_allowed_hosts.split(',') if host.strip()]
+
+# Always allow Vercel preview/prod hosts even if ALLOWED_HOSTS env var is too strict.
+if '.vercel.app' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('.vercel.app')
+
+vercel_url = os.getenv('VERCEL_URL', '').strip()
+if vercel_url and vercel_url not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(vercel_url)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -61,12 +85,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': env('DB_NAME', default=str(BASE_DIR / 'db.sqlite3')),
-        'USER': env('DB_USER', default=''),
-        'PASSWORD': env('DB_PASSWORD', default=''),
-        'HOST': env('DB_HOST', default=''),
-        'PORT': env('DB_PORT', default=''),
+        'ENGINE': _env_first('DB_ENGINE', 'DATABASE_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': _env_first('DB_NAME', 'DATABASE_NAME', default=str(BASE_DIR / 'db.sqlite3')),
+        'USER': _env_first('DB_USER', 'DATABASE_USER', default=''),
+        'PASSWORD': _env_first('DB_PASSWORD', 'DATABASE_PASSWORD', default=''),
+        'HOST': _env_first('DB_HOST', 'DATABASE_HOST', default=''),
+        'PORT': _env_first('DB_PORT', 'DATABASE_PORT', default=''),
     }
 }
 
@@ -85,7 +109,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -107,10 +133,15 @@ CORS_ALLOWED_ORIGINS = env(
     default='http://localhost:3000,http://localhost:8000'
 ).split(',')
 
-AI_API_KEY = env('AI_API_KEY', default='')
-AI_API_URL = env('AI_API_URL', default='https://api.openai.com/v1/chat/completions')
-AI_MODEL = env('AI_MODEL', default='gpt-4o-mini')
-AI_TIMEOUT_SECONDS = env.int('AI_TIMEOUT_SECONDS', default=180)
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in env('CSRF_TRUSTED_ORIGINS', default='').split(',') if origin
+]
+
+# Respect HTTPS headers set by Vercel's edge proxy in production.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 AI_API_KEY = env('AI_API_KEY', default='')
 AI_API_URL = env('AI_API_URL', default='https://api.openai.com/v1/chat/completions')
