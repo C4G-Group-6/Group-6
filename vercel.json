@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npm run build:css && python manage.py collectstatic --noinput",
+  "buildCommand": "bash build.sh",
   "routes": [
     {
       "src": "/(.*)",
