@@ -12,6 +12,10 @@
   />
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  <style>
+    /* Readable fallback if static CSS is unavailable */
+    html, body { background: #ffffff; color: #111111; }
+  </style>
   {% block extra_css %}{% endblock %}
 </head>
 <body>
