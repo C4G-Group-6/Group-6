@@ -15,6 +15,6 @@ echo "Installing Python requirements..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 4. Run Django collectstatic
+# 4. Run Django collectstatic (using the venv python)
 echo "Collecting static files..."
-python3 manage.py collectstatic --noinput
+python manage.py collectstatic --noinput
